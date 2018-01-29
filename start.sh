@@ -1,4 +1,7 @@
 #!/bin/sh
+echo "Pulling submodule(s)."
+git submodule init
+git submodule update
 echo "Starting fuzzing server..."
 sudo adb kill-server
 sudo adb start-server

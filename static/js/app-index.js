@@ -52,7 +52,7 @@ function launch(id, browser){
 Vue.component('dev-listing', {
 	props: ['device'],
 	template:'<li>{{device.name}}&nbsp;' +
-		'<button v-bind:id="device.name">Browser</button>' +
+		'<button v-bind:id="device.name" onclick="location.href=\'/begin/\'+this.id;">Browser</button>' +
 		'<button v-bind:id="device.name" onclick="launch(this.id)">ADB</button>' +
 		'</li>'
 });

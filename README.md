@@ -30,4 +30,5 @@ TODO:
 - Consider using named pipes for communication with backend.
 - Use pydoc, document everything.
 - Separate use of domato into a driver.
+- Fix bugs that happen because SQLite database is being used for a separate device's fuzzing.
 - Find out why crashes in Binder request "invalid crash size 0". Whenever this happens, no tombstone gets created. :/
