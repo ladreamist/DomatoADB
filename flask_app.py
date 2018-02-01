@@ -134,6 +134,7 @@ def beginfuzz(devicename=None):
 def fuzztest():
     """Get to fuzzing."""
     fuzzID = request.cookies.get("fuzzID")
+    deviceid = resp.cookies.get("deviceid")
     run = request.cookies.get("fuzzrun")
     count = request.cookies.get("fuzzcount")
     print("Request cookies:",request.cookies)
@@ -163,7 +164,7 @@ def fuzztest():
         resp = send_from_directory(path, \
                 "fuzz-%d.html" % int(count) )
         #Store test return
-        updatebrowserfuzz(fuzzID, run)
+        updatebrowserfuzz(deviceid, fuzzID, run, count)
         count = int(count) + 1
         path = row[0]
         resp.set_cookie("fuzzcount", value=str(count))

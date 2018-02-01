@@ -42,8 +42,23 @@ def initbrowsers():
         for entry in entries:
             if "#" in entry:
                 continue
-            browser, package = entry.split(":")
-            BROWSERS[browser] = package[:-1] #Rid trailing newline
+            browser, package,activity  = entry.split(":") 
+            BROWSERS[browser.strip()] = {'package':package.strip(), 'activity':activity.strip()}
+
+def getbrowserpackage(browser):
+    """Abstracted for flexibility in future changes."""
+    if browser in BROWSERS:
+        return BROWSERS[browser]['package']
+    print("Couldn't find browser {}".format(browser))
+    return None
+
+def getbrowseractivity(browser):
+    """Abstracted for flexibility in future changes."""
+    if browser in BROWSERS:
+        return BROWSERS[browser]['activity']
+    print("Couldn't find browser {}".format(browser))
+    return None
+
 
 def launchbrowser(devname, browserid):
     """Use ADB to launch a given browser on a device."""
@@ -54,13 +69,14 @@ def launchbrowser(devname, browserid):
             devfound = True
             break
     if not devfound:
-        #Device not found.
         return {'output':'Sorry, could not find device {}.'.format(devname)}
     if browserid not in BROWSERS:
         return {'output':"Sorry, don't have that browser's package."}
-    package = BROWSERS[browserid]
+    package = getbrowserpackage(browserid)
+    activity = getbrowseractivity(browserid)
+    launchstr = package + "/" + activity
     url = "{}:{}/begin/{}".format(CONFIG['host'], CONFIG['port'], devname)
-    args = ['adb', '-s', devname, 'shell', 'am', 'start', '-n', package, '-d', url]
+    args = ['adb', '-s', devname, 'shell', 'am', 'start', '-n', launchstr, '-d', url]
     print("Args:", args)
     p = Popen(args, stdout=PIPE)
     return {'output':p.stdout.read().decode('utf-8')}
@@ -95,17 +111,28 @@ def generatedatabase():
     curs.execute("""CREATE TABLE IF NOT EXISTS fuzzruns(run_label TEXT,
             iterations INTEGER)""")
 
-def updatebrowserfuzz(fuzzID, run, count=0):
+def updatebrowserfuzz(deviceid, fuzzID, run, count=0):
     while True:
         try:
             with sqlite3.connect(DBNAME) as conn:
                 curs = conn.cursor()
-                curs.execute("""UPDATE browsers
-                        SET lasttest = ?, lastrunid = ?
-                        WHERE fuzzid = ?""", (datetime.now(), run, fuzzID))
+                browserexists = len(curs.execute("""
+                    SELECT FROM browsers WHERE device_id = 
+                    """)) > 0
+                if browserexists:
+                    curs.execute("""UPDATE browsers
+                            SET lasttest = ?, lastrunid = ?,
+                            WHERE fuzzid = ?""", (datetime.now(), run, fuzzID))
+                else:
+                    curs.execute("""INSERT INTO 
+                        browsers(device_id,fuzzid, lastrunid, lasttest, 
+                            laststart)
+                        VALUES(?,?,?,?,?)
+                    """, (deviceid, fuzzID, run, count, datetime.now()))
             break
         except:
             print(sys.exec_info())
+            print("It's expected that the DB is too hot right now.")
     
 
 def forwardlocalhost(devname, port):
@@ -168,6 +195,7 @@ def getdevices():
         device = {'name':name, 'type':devicetype, 'fuzzing':False}
         #print('name',name)
         device['browsers'] = getbrowsers(name)
+        device['fuzzing'] = 'TBD'
         curs = conn.cursor()
         """
         TODOs:

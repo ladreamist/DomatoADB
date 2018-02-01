@@ -36,7 +36,10 @@ def monitordevice(devname):
             while True:
                 crashlog = ""
                 line = proc.stdout.readline().decode("utf-8")
-                if CRASHPATTERN not in line:
+                nocrash = True
+                if CRASHPATTERN in line:
+                    nocrash = False
+                if nocrash:
                     continue
                 print("Got a crash?")
                 print(devname, '--', line)

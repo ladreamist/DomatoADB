@@ -1,2 +1,3 @@
-Chrome:com.android.chrome/com.google.android.app.chrome.Main
+#Browser name:package:activity
+Chrome:com.android.chrome:com.google.android.app.chrome.Main
 Crasher:edu.unc.ntropy.n00bsec.crasher
