@@ -15,7 +15,7 @@ CONFIG = {'port':5000,
         'host':'0.0.0.0',
         'remoteport':'5000',
         'logsdir':'./logs/',
-        'force-reload': 15, #Seconds until the harness forces reloads
+        'force-reload': 30, #Seconds until the harness forces reloads
         'js-reload':12,
         'static':'./static'
         }
@@ -96,11 +96,16 @@ def generatedatabase():
             iterations INTEGER)""")
 
 def updatebrowserfuzz(fuzzID, run, count=0):
-    with sqlite3.connect(DBNAME) as conn:
-        curs = conn.cursor()
-        curs.execute("""UPDATE browsers
-                SET lasttest = ?, lastrunid = ?
-                WHERE fuzzid = ?""", (datetime.now(), run, fuzzID))
+    while True:
+        try:
+            with sqlite3.connect(DBNAME) as conn:
+                curs = conn.cursor()
+                curs.execute("""UPDATE browsers
+                        SET lasttest = ?, lastrunid = ?
+                        WHERE fuzzid = ?""", (datetime.now(), run, fuzzID))
+            break
+        except:
+            print(sys.exec_info())
     
 
 def forwardlocalhost(devname, port):

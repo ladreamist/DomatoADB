@@ -1,4 +1,5 @@
 import time
+import os
 import sys
 import sqlite3
 import threading
@@ -56,15 +57,24 @@ def monitordevice(devname):
                                 break
                     if foundtombstone:
                         break
-                with open(logname, 'a') as f:
+                perm = 'w'
+                if os.path.exists(logname):
+                    perm = 'a'
+                with open(logname, perm) as f:
+                    f.seek(0, os.SEEK_END)
                     logpos = f.tell()
                     f.write(crashlog)
-                    with sqlite3.connect(DBNAME) as conn:
-                        conn.execute("""INSERT INTO crashes(logpos, logpath)
-                            VALUES(?,?)""", (logpos,logname))
+                    while True:
+                        try:
+                            with sqlite3.connect(DBNAME) as conn:
+                                conn.execute("""INSERT INTO crashes(logpos, logpath)
+                                    VALUES(?,?)""", (logpos,logname))
+                                break
+                        except sqlite3.OperationalError:
+                            print("Waiting for Database to unlock...")
         except:
             print("Exception thrown in harness thread.")
-            print(sys.exc_info)
+            print(sys.exc_info())
             continue
 
 def main():
