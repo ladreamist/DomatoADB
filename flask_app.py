@@ -134,7 +134,7 @@ def beginfuzz(devicename=None):
 def fuzztest():
     """Get to fuzzing."""
     fuzzID = request.cookies.get("fuzzID")
-    deviceid = resp.cookies.get("deviceid")
+    deviceid = request.cookies.get("deviceid")
     run = request.cookies.get("fuzzrun")
     count = request.cookies.get("fuzzcount")
     print("Request cookies:",request.cookies)

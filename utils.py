@@ -42,6 +42,9 @@ def initbrowsers():
         for entry in entries:
             if "#" in entry:
                 continue
+            if entry[0] == "#":
+                continue
+            print("Browser entry:", entry)
             browser, package,activity  = entry.split(":") 
             BROWSERS[browser.strip()] = {'package':package.strip(), 'activity':activity.strip()}
 
@@ -116,9 +119,12 @@ def updatebrowserfuzz(deviceid, fuzzID, run, count=0):
         try:
             with sqlite3.connect(DBNAME) as conn:
                 curs = conn.cursor()
-                browserexists = len(curs.execute("""
-                    SELECT FROM browsers WHERE device_id = 
-                    """)) > 0
+                print("deviceid:{}".format(deviceid))
+                curs.execute("""
+                            SELECT * 
+                            FROM browsers WHERE device_id = ?
+                            """,[deviceid])
+                browserexists = curs.rowcount > 0
                 if browserexists:
                     curs.execute("""UPDATE browsers
                             SET lasttest = ?, lastrunid = ?,
@@ -130,8 +136,9 @@ def updatebrowserfuzz(deviceid, fuzzID, run, count=0):
                         VALUES(?,?,?,?,?)
                     """, (deviceid, fuzzID, run, count, datetime.now()))
             break
-        except:
-            print(sys.exec_info())
+        except Exception as e:
+            print(e)
+            print(sys.exc_info())
             print("It's expected that the DB is too hot right now.")
     
 
