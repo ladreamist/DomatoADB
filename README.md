@@ -8,7 +8,7 @@ code to a driver, interchangable with other generators.
 - Older devices experience OOM crashes very easily in Chrome. But it's preferable to keep hardware cheap.
 
 
-Current Roles:
+# Current Roles:
 1. Frontend Server (flask_app.py)
 - Serves content of user interface.
 - Initializes database.
@@ -23,13 +23,13 @@ Current Roles:
 4. Drivers (TODO)
 - Separates the server and harness code from Domato such that any generative fuzzing tech could be used in its place.
 
-Steps to use:
+# Steps to use:
 - Install tmux (optional), and ADB for your platform.
 - Run `./start.sh`, or (sans tmux) run flask_app.py and harness.py with Python 3.
 - Connect devices to ADB.
 - Wait for device to appear, and click on ADB besides it to begin fuzzing.
 
-TODO:
+# TODO:
 - Separate ADB and harness backend from frontend server.
 - Consider using named pipes for communication with backend.
 - Use pydoc, document everything.
