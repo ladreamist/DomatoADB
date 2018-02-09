@@ -3,6 +3,10 @@ Server for fuzzing Android browsers. Originally built with Domato as a core
 component for generating HTML, CSS, and JS, with plans soon to move Domato related
 code to a driver, interchangable with other generators.
 
+# Issues
+- Fuzzing isn't yet hands free. Need to work on launching pages after crashes, and diagnosing.
+- Older devices experience OOM crashes very easily in Chrome. But it's preferable to keep hardware cheap.
+
 
 Current Roles:
 1. Frontend Server (flask_app.py)

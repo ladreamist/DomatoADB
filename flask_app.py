@@ -161,6 +161,7 @@ def fuzztest():
             curs.execute("""SELECT run_label, iterations 
                 FROM fuzzruns where rowid = ?""", (run,))
             path = curs.fetchone()[0]
+        print("Serving: {}/fuzz-{}.html".format(path, count))
         resp = send_from_directory(path, \
                 "fuzz-%d.html" % int(count) )
         #Store test return
