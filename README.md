@@ -1,7 +1,7 @@
-# DomatoADB
+# DomatoADB Server
 Server for fuzzing Android browsers. Originally built with Domato as a core
-component for generating HTML, CSS, and JS, with plans soon to move Domato related
-code to a driver, interchangable with other generators.
+component for generating HTML, CSS, and JS, but may move Domato related
+code to a driver, so it may be interchangable with other generators.
 
 # Issues
 - Fuzzing isn't yet hands free. Need to work on launching pages after crashes, and diagnosing.
@@ -26,7 +26,7 @@ code to a driver, interchangable with other generators.
 # Steps to use:
 - Install tmux (optional), and ADB for your platform.
 - Run `./start.sh`, or (sans tmux) run flask_app.py and harness.py with Python 3.
-- Connect devices to ADB.
+- Connect device(s) to ADB.
 - Wait for device to appear, and click on ADB besides it to begin fuzzing.
 
 # TODO:
@@ -35,4 +35,6 @@ code to a driver, interchangable with other generators.
 - Use pydoc, document everything.
 - Separate use of domato into a driver.
 - Fix bugs that happen because SQLite database is being used for a separate device's fuzzing.
-- Find out why crashes in Binder request "invalid crash size 0". Whenever this happens, no tombstone gets created. :/
+- Separate database state into separate files for each device being fuzzed.
+- Fix OOM issue in Chrome on older devices.
+- Write a real visual frontend.
